@@ -26,9 +26,16 @@ body {
   color: white;
 }
 
-.title-muted {
-  color: white;
-  margin: 15px 0;
+.nav a {
+  margin: 10px;
+  padding: 5px 10px !important;
+  font-weight: bold;
+
+  &:hover {
+    border-radius: 15px;
+    background-color: #1976D2 !important;
+    color: white !important;
+  }
 }
 
 .content {
@@ -37,12 +44,23 @@ body {
   border-radius: 8px;
 }
 
+.checkin {
+  padding-bottom: 16px;
+}
+
+.checkin-image {
+  float: left;
+  clear: both;
+  padding-right: 18px;
+}
+
 .checkin-button-group {
-  @extend .btn-group
+  @extend .btn-group;
 }
 
 .checkin-button {
-  @extend .btn
+  @extend .btn;
+  font-size: 16px;
 }
 
 .checkin-check {
@@ -60,6 +78,32 @@ body {
   text-align: center;
   font-size: 24px;
   padding-bottom: 1em;
+}
+
+.habits-list {
+  list-style: none;
+  padding-left: 0;
+  font-size: 22px;
+}
+
+.new-habit {
+  float: right;
+  margin-top: 2em;
+  margin-right: 2em;
+}
+
+.habit-form {
+  margin: 15px;
+}
+
+.progress {
+  height: 30px;
+}
+
+.progress-bar {
+  min-width: 4em;
+  font-size: 20px;
+  padding-top: 5px;
 }
 
 footer {
