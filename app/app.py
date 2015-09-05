@@ -49,14 +49,25 @@ class UserRoute(Resource):
         if not u:
             return {'error': 'User not found.'}
         else:
+            habits = []
+            for habit in u.habits:
+                habits.append({'id': habit.id,
+                               'title': habit.title,
+                               'description': habit.description,
+                               'frequency': habit.frequency,
+                               'frequency_type': habit.frequency_type})
             return {'email': u.email,
                     'first_name': u.first_name,
-                    'last_name': u.last_name}
+                    'last_name': u.last_name,
+                    'habits': habits
+                    }
 
 
 class HabitRoute(Resource):
     def get(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        parser.add_argument('token', type=str)
         parser.add_argument('token', type=str)
         args = parser.parse_args()
         email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
@@ -67,7 +78,7 @@ class HabitRoute(Resource):
             return {'email': u.email,
                     'first_name': u.first_name,
                     'last_name': u.last_name}
-                    
+
 
 api.add_resource(Login, '/login')
 api.add_resource(UserRoute, '/user')
@@ -80,10 +91,6 @@ class User(db.Model):
     last_name = db.Column(db.String(80))
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
-    habits = db.relationship('Habit', backref='user',
-                                lazy='dynamic')
-    actions = db.relationship('Action', backref='user',
-                                lazy='dynamic')
 
     def __init__(self, first_name, last_name, email, password):
         self.first_name = first_name
@@ -101,18 +108,20 @@ class User(db.Model):
 class Habit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User',
+        backref=db.backref('habits', lazy='dynamic'))
     title = db.Column(db.String(140))
     description = db.Column(db.Text)
-    # Number of minutes
     frequency = db.Column(db.Integer)
-    actions = db.relationship('Action', backref='habit',
-                                lazy='dynamic')
+    # 0 = minute, 1 = hour, 2 = day, 3 = week, 4 = month, 5 = year
+    frequency_type = db.Column(db.Integer)
 
-    def __init__(self, user_id, title, description, frequency):
+    def __init__(self, user_id, title, description, frequency, frequency_type):
         self.user_id = user_id
         self.title = title
         self.description = description
         self.frequency = frequency
+        self.frequency_type = frequency_type
 
     def __repr__(self):
         return '<Habit #{} for User {}>'.format(self.id, self.user_id)
@@ -121,7 +130,11 @@ class Habit(db.Model):
 class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'))
+    habit = db.relationship('Habit',
+        backref=db.backref('actions', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User',
+        backref=db.backref('actions', lazy='dynamic'))
     sent = db.Column(db.DateTime)
     received = db.Column(db.DateTime)
     # 0 = Yes
