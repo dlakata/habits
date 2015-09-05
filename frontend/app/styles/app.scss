@@ -80,6 +80,25 @@ body {
   padding-bottom: 1em;
 }
 
+.habits-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.new-habit {
+  float: right;
+  margin-top: 2em;
+  margin-right: 2em;
+}
+
+.habit-form {
+  margin: 15px;
+}
+
+.progress-bar {
+  min-width: 4em;
+}
+
 footer {
   padding-top: 8px;
 }
