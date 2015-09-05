@@ -1,15 +1,15 @@
 {{#if model}}
-<h1>Continue your habits!</h1>
-{{#each model as |habit| }}
-  <h3 class="checkin-title">Did you {{habit.title}}?</h3>
-  <div class="checkin-button-group btn-group">
-    <button {{action 'habitDone' 'yes' habit}} type="button" class="btn-primary checkin-button">Yes</button>
-    <button {{action 'habitDone' 'no' habit}} type="button" class="btn-danger checkin-button">No</button>
-    <button {{action 'habitDone' 'maybe' habit}} type="button" class="btn-default checkin-button">Maybe</button>
-  </div>
-{{/each}}
+  <h1>Continue your habits!</h1>
+  {{#each model as |habit| }}
+    <h3 class="checkin-title">Did you {{habit.title}}?</h3>
+    <div class="checkin-button-group btn-group">
+      <button {{action 'habitDone' 'yes' habit}} type="button" class="btn-primary checkin-button">Yes</button>
+      <button {{action 'habitDone' 'no' habit}} type="button" class="btn-danger checkin-button">No</button>
+      <button {{action 'habitDone' 'maybe' habit}} type="button" class="btn-default checkin-button">Maybe</button>
+    </div>
+  {{/each}}
 {{else}}
-<img class="checkin-check" src="check.png">
-<h1 class="checkin-good-title">Looks good!</h1>
-<p class="checkin-good-subtitle">All set for now!</p>
+  <img class="checkin-check" src="check.png">
+  <h1 class="checkin-good-title">Looks good!</h1>
+  <p class="checkin-good-subtitle">All set for now!</p>
 {{/if}}

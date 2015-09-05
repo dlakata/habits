@@ -1,8 +1,14 @@
-{{#if tasks}}
+{{#if model}}
   <h1>Overview of your progress</h1>
-  <ul>
-    {{#each tasks as |task|}}
-      <li>{{task.title}}. You've maintained this habit for {{task.time}} days!</li>
+  <ul class="habits-list">
+    {{#each model as |habit|}}
+      <li>{{habit.title}}</li>
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{habit.time}}"
+             aria-valuemin="0" aria-valuemax="{{habit.goal}}" style="width: {{percentage habit}}%;">
+          {{habit.time}} days
+        </div>
+      </div>
     {{/each}}
   </ul>
 {{else}}
