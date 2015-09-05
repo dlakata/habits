@@ -1,11 +1,11 @@
-{{#if habits}}
+{{#if model}}
 <h1>Continue your habits!</h1>
-{{#each habits as |habit| }}
+{{#each model as |habit| }}
   <h3 class="checkin-title">Did you {{habit.title}}?</h3>
-  <div class="checkin-button-group">
-    <button type="button" class="checkin-button">Yes</button>
-    <button type="button" class="checkin-button">No</button>
-    <button type="button" class="checkin-button">Maybe</button>
+  <div class="checkin-button-group btn-group">
+    <button type="button" class="btn-primary checkin-button">Yes</button>
+    <button type="button" class="btn-danger checkin-button">No</button>
+    <button type="button" class="btn-default checkin-button">Maybe</button>
   </div>
 {{/each}}
 {{else}}
