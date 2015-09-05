@@ -71,6 +71,13 @@ body {
 
 .habits-list {
   list-style: none;
+  padding-left: 0;
+}
+
+.new-habit {
+  float: right;
+  margin-top: 2em;
+  margin-right: 2em;
 }
 
 .progress-bar {

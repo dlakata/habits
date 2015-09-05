@@ -1,14 +1,17 @@
 {{#if model}}
-  <h1>Overview of your progress</h1>
+  <button class="btn btn-default new-habit" type="submit">New Habit</button>
+  <h1>Your habits</h1>
   <ul class="habits-list">
     {{#each model as |habit|}}
-      <li>{{habit.title}}</li>
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="{{habit.time}}"
-             aria-valuemin="0" aria-valuemax="{{habit.goal}}" style="width: {{percentage habit}}%;">
-          {{habit.time}} days
+      <li>{{habit.title}}
+        {{#link-to 'habit' habit}}<i class="glyphicon glyphicon-cog habit-settings" aria-hidden="true"></i>{{/link-to}}
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="{{habit.time}}"
+               aria-valuemin="0" aria-valuemax="{{habit.goal}}" style="width: {{percentage habit}}%;">
+            {{habit.time}} days
+          </div>
         </div>
-      </div>
+      </li>
     {{/each}}
   </ul>
 {{else}}
