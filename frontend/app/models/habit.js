@@ -5,5 +5,6 @@ export default DS.Model.extend({
   time: DS.attr('number'),
   goal: DS.attr('number'),
   title: DS.attr('string'),
-  description: DS.attr('string')
+  description: DS.attr('string'),
+  user: DS.belongsTo('user')
 });
