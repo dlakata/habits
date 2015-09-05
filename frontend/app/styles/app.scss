@@ -12,6 +12,20 @@ body {
   }
 }
 
+.navbar {
+  margin-bottom: 0;
+}
+
+.navbar-default {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-brand {
+  color: white;
+}
+
 .title-muted {
   color: white;
   margin: 15px 0;
