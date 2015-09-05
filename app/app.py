@@ -1,6 +1,8 @@
 from flask import Flask, send_from_directory, current_app
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_restful import Resource, Api, reqparse
+from werkzeug.security import generate_password_hash, check_password_hash
+import jwt
 
 
 app = Flask(__name__)
@@ -15,7 +17,13 @@ class Login(Resource):
         parser.add_argument('password', type=str)
         args = parser.parse_args()
         u = User.query.filter_by(email=args['email']).first()
-        return u
+        if not u:
+            return {'error': 'User not found.'}
+        if u.check_password(args['password']):
+            return {'token': jwt.encode({'some': 'payload'}, 'secret', algorithm='HS256')}
+        else:
+            return {'error': 'Incorrect password specified.'}
+
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -24,10 +32,7 @@ class Login(Resource):
         parser.add_argument('email', type=str)
         parser.add_argument('password', type=str)
         args = parser.parse_args()
-        print args
-        print args['first_name'], args['last_name'], args['email'], args['password']
         u = User(args['first_name'], args['last_name'], args['email'], args['password'])
-        print u
         if u:
             db.session.add(u)
             db.session.commit()
@@ -47,10 +52,16 @@ class User(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = password
+        print password, generate_password_hash(password)
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __repr__(self):
         return '<User {}>'.format(self.email)
+
+
 
 
 @app.route("/")
