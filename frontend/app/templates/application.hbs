@@ -1,3 +1,22 @@
-<h2 id="title">Welcome to Ember</h2>
-
-{{outlet}}
+<div class="header">
+  <div class="container">
+    {{#link-to 'index'}}<h3 class="title-muted">Habiticci</h3>{{/link-to}}
+    <!--
+    <nav>
+      <ul class="nav nav-pills pull-right">
+        <li class="active">Home</li>
+        <li>Check in</li>
+      </ul>
+    </nav>
+    -->
+  </div>
+</div>
+<div class="container content">
+  {{outlet}}
+</div>
+<div class="container">
+  <footer class="footer">
+    <p class="footer-text pull-left">Habiticci</p>
+    <p class="footer-text pull-right">&copy; Copyright 2015</p>
+  </footer>
+</div>
