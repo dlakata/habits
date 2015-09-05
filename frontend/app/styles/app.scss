@@ -26,9 +26,16 @@ body {
   color: white;
 }
 
-.title-muted {
-  color: white;
-  margin: 15px 0;
+.nav a {
+  margin: 10px;
+  padding: 5px 10px !important;
+  font-weight: bold;
+
+  &:hover {
+    border-radius: 15px;
+    background-color: #1976D2 !important;
+    color: white !important;
+  }
 }
 
 .content {
