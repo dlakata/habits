@@ -9,7 +9,13 @@
           <ul class="nav navbar-nav navbar-right">
             <li>{{link-to 'Dashboard' 'dashboard'}}</li>
             <li>{{link-to 'Check in' 'checkin'}}</li>
-            <li><a href="#">Logout</a></li>
+            <li>
+              {{#if session.isAuthenticated}}
+                <a {{action 'invalidateSession'}}>Logout</a>
+              {{else}}
+                {{#link-to 'login'}}Login{{/link-to}}
+              {{/if}}
+            </li>
           </ul>
         </div>
       </div>

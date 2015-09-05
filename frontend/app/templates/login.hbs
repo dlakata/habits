@@ -1,32 +1,33 @@
 <form class="col-md-4">
   <h1>Sign up</h1>
   <div class="form-group">
-    <label for="first_name">First name</label>
-    {{input id="first_name" placeholder="First name" class="form-control"}}
+    <label for="s_first_name">First name</label>
+    {{input id="s_first_name" placeholder="First name" class="form-control"}}
   </div>
   <div class="form-group">
-    <label for="last_name">Last name</label>
-    {{input id="last_name" placeholder="Last name" class="form-control"}}
+    <label for="s_last_name">Last name</label>
+    {{input id="s_last_name" placeholder="Last name" class="form-control"}}
   </div>
+  <div class="form-group">
+    <label for="s_email">Email</label>
+    {{input id="s_email" placeholder="Email" class="form-control"}}
+  </div>
+  <div class="form-group">
+    <label for="s_password">Password</label>
+    {{input id="s_password" type="password" placeholder="Password" class="form-control"}}
+  </div>
+  <button type="submit" class="btn btn-success">Sign up</button>
+</form>
+
+<form class="col-md-4 col-md-offset-2" {{action 'authenticate' on='submit'}}>
+  <h1>Login</h1>
   <div class="form-group">
     <label for="email">Email</label>
     {{input id="email" placeholder="Email" class="form-control"}}
   </div>
   <div class="form-group">
     <label for="password">Password</label>
-    {{input id="username" type="password" placeholder="Username" class="form-control"}}
-  </div>
-  <button type="submit" class="btn btn-success">Sign up</button>
-</form>
-<form class="col-md-4 col-md-offset-2">
-  <h1>Login</h1>
-  <div class="form-group">
-    <label for="username">Email</label>
-    {{input id="email" placeholder="Email" class="form-control"}}
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    {{input id="username" type="password" placeholder="Username" class="form-control"}}
+    {{input id="password" type="password" placeholder="Password" class="form-control"}}
   </div>
   <button type="submit" class="btn btn-primary">Login</button>
 </form>
