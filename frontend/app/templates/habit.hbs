@@ -1,16 +1,16 @@
 <h1>{{model.title}}</h1>
 
-<form class="form-horizontal">
+<form class="habit-form form-horizontal">
   <div class="form-group">
-    <label class="detail-label">Title</label>
+    <label class="detail-label" for="title">Title</label>
     <div class="form-col">
-      <input type="text" class="form-control" value="{{model.title}}">
+      <input id="title" type="text" class="form-control" value="{{model.title}}">
     </div>
   </div>
   <div class="form-group">
-    <label class="detail-label">Description</label>
+    <label class="detail-label" for="description">Description</label>
     <div class="form-col">
-      <input type="text" class="form-control" value="{{model.description}}">
+      <input id="description" type="text" class="form-control" value="{{model.description}}">
     </div>
   </div>
   <div class="form-group">
@@ -22,16 +22,18 @@
 
 <div class="habit-stats">
   <div class="habit-box">
-    <p class="stat-title">Days Complete</p>
-    <p class="stat-value">49</p>
-  </div>
-  <div class="habit-box">
     <p class="stat-title">Next Reminder</p>
     <p class="stat-value">12</p>
     <p class="stat-subtitle">days</p>
   </div>
   <div class="habit-box">
     <p class="stat-title">Percent Done</p>
-    <p class="stat-value">55%</p>
+    <p class="stat-value">{{percentage model}}%</p>
+  </div>
+  <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="{{model.time}}"
+         aria-valuemin="0" aria-valuemax="{{model.goal}}" style="width: {{percentage model}}%;">
+      {{model.time}} days
+    </div>
   </div>
 </div>
