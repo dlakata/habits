@@ -4,6 +4,7 @@ from flask_restful import Resource, Api, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime
+import requests
 
 
 app = Flask(__name__)
@@ -11,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 api = Api(app)
 
-class Login(Resource):
+class LoginAPI(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str)
@@ -26,6 +27,7 @@ class Login(Resource):
             return {'error': 'Incorrect password specified.'}
 
 
+class CreateUserAPI(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('first_name', type=str)
@@ -37,15 +39,63 @@ class Login(Resource):
         if u:
             db.session.add(u)
             db.session.commit()
+            return {'token': jwt.encode({'email': args['email']}, 'dankmemes', algorithm='HS256')}
+        else:
+            return {'error': 'User could not be created.'}
 
 
-class UserRoute(Resource):
-    def get(self):
+class UserAPI(Resource):
+    def get(self, id):
         parser = reqparse.RequestParser()
         parser.add_argument('token', type=str)
         args = parser.parse_args()
         email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
-        u = User.query.filter_by(email=email).first()
+        u = User.query.filter_by(email=email, id=id).first()
+        if not u:
+            return {'error': 'User not found.'}
+        else:
+            return {'user_id': u.id,
+                    'email': u.email,
+                    'first_name': u.first_name,
+                    'last_name': u.last_name,
+                   }
+
+    def put(self, id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('first_name', type=str)
+        parser.add_argument('last_name', type=str)
+        parser.add_argument('email', type=str)
+        parser.add_argument('password', type=str)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=id).first()
+        if not u:
+            return {'error': 'User not found.'}
+        for k, v in args.items():
+            if v is not None:
+                u[k] = v
+        db.session.commit()
+
+    def delete(self, id):
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=id).first()
+        if not u:
+            return {'error': 'User not found.'}
+        db.session.delete(u)
+        db.session.commit()
+
+
+class AllHabitsAPI(Resource):
+    def get(self, user_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        parser.add_argument('title', type=str)
+        parser.add_argument('description', type=str)
+        parser.add_argument('frequency', type=int)
+        parser.add_argument('frequency_type', type=int)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=user_id).first()
         if not u:
             return {'error': 'User not found.'}
         else:
@@ -56,33 +106,110 @@ class UserRoute(Resource):
                                'description': habit.description,
                                'frequency': habit.frequency,
                                'frequency_type': habit.frequency_type})
-            return {'email': u.email,
-                    'first_name': u.first_name,
-                    'last_name': u.last_name,
-                    'habits': habits
-                    }
+            return {'habits': habits}
 
 
-class HabitRoute(Resource):
-    def get(self):
+    def post(self, user_id):
         parser = reqparse.RequestParser()
         parser.add_argument('token', type=str)
-        parser.add_argument('token', type=str)
-        parser.add_argument('token', type=str)
+        parser.add_argument('title', type=str)
+        parser.add_argument('description', type=str)
+        parser.add_argument('frequency', type=int)
+        parser.add_argument('frequency_type', type=int)
         args = parser.parse_args()
         email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
-        u = User.query.filter_by(email=email).first()
+        u = User.query.filter_by(email=email, id=user_id).first()
         if not u:
             return {'error': 'User not found.'}
         else:
-            return {'email': u.email,
-                    'first_name': u.first_name,
-                    'last_name': u.last_name}
+            habit = Habit(user=u, 
+                          title=args['title'], 
+                          description=args.get('description'), 
+                          frequency=args['frequency'], 
+                          frequency_type=args['frequency_type'])
+            if habit:
+                db.session.add(habit)
+                db.session.commit()
+            else:
+                return {'error': 'Habit could not be created.'}
 
 
-api.add_resource(Login, '/login')
-api.add_resource(UserRoute, '/user')
-api.add_resource(HabitRoute, '/habit')
+class HabitAPI(Resource):
+    def get(self, user_id, habit_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=user_id).first()
+        if not u:
+            return {'error': 'User not found.'}
+        else:
+            habit = Habit.query.filter_by(user_id=user_id, id=habit_id).first()
+            if not habit:
+                return {'error': 'Habit not found.'}
+            else:
+                return {'id': habit.id,
+                        'title': habit.title,
+                        'description': habit.description,
+                        'frequency': habit.frequency,
+                        'frequency_type': habit.frequency_type}
+
+    def put(self, user_id, habit_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        parser.add_argument('title', type=str)
+        parser.add_argument('description', type=str)
+        parser.add_argument('frequency', type=int)
+        parser.add_argument('frequency_type', type=int)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=user_id).first()
+        if not u:
+            return {'error': 'User not found.'}
+        habit = Habit.query.filter_by(user_id=user_id, id=habit_id).first()
+        if not habit:
+            return {'error': 'Habit not found.'}
+        for k, v in args.items():
+            if v is not None:
+                habit[k] = v
+        db.session.commit()
+
+    def delete(self, user_id, habit_id):
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=user_id).first()
+        if not u:
+            return {'error': 'User not found.'}
+        habit = Habit.query.filter_by(user_id=user_id, id=habit_id).first()
+        if not habit:
+            return {'error': 'Habit not found.'}    
+        db.session.delete(habit)
+        db.session.commit()
+
+
+class ActionAPI(Resource):
+    def put(self, user_id, habit_id, action_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        parser.add_argument('answer', type=str)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email, id=user_id).first()
+        action = Action.query.filter_by(id=action_id, 
+                                        user=u, 
+                                        habit_id=habit_id)
+        if not action.received:
+            action.received = datetime.now()
+            action.answer = args['answer']
+        db.session.commit()
+        return send_from_directory(current_app.static_folder, "index.html")
+
+
+api.add_resource(LoginAPI, '/login')
+api.add_resource(CreateUserAPI, '/user')
+api.add_resource(UserAPI, '/user/<int:id>')
+api.add_resource(AllHabitsAPI, '/user/<int:user_id>/habit')
+api.add_resource(HabitAPI, '/user/<int:user_id>/habit/<int:habit_id>')
+api.add_resource(ActionAPI, '/user/<int:user_id>/habit/<int:habit_id>/action/<int:action_id>')
 
 
 class User(db.Model):
@@ -116,8 +243,8 @@ class Habit(db.Model):
     # 0 = minute, 1 = hour, 2 = day, 3 = week, 4 = month, 5 = year
     frequency_type = db.Column(db.Integer)
 
-    def __init__(self, user_id, title, description, frequency, frequency_type):
-        self.user_id = user_id
+    def __init__(self, user, title, description, frequency, frequency_type):
+        self.user = user
         self.title = title
         self.description = description
         self.frequency = frequency
@@ -142,9 +269,9 @@ class Action(db.Model):
     # 2 = No
     answer = db.Column(db.Integer)
 
-    def __init__(self, habit_id, user_id):
-        self.habit_id = habit_id
-        self.user_id = user_id
+    def __init__(self, habit, user):
+        self.habit = habit
+        self.user = user
         self.sent = datetime.now() 
 
     def __repr__(self):
