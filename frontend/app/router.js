@@ -8,7 +8,7 @@ var Router = Ember.Router.extend({
 Router.map(function() {
   this.route('login');
   this.route('dashboard');
-  this.route('task-details', { path: '/task/:task_id' });
+  this.route('habit-details', { path: '/habit/:habit_id' });
   this.route('checkin');
 });
 
