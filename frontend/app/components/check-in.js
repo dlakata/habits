@@ -10,6 +10,8 @@ export default Ember.Component.extend({
       return 'notok.png';
     } else if (checked === true) {
       return 'ok.png';
+    } else if (checked === 'maybe') {
+      return 'attention.png';
     } else {
       return 'rating.png';
     }
@@ -22,6 +24,8 @@ export default Ember.Component.extend({
         this.set('checked', true);
       } else if (_status === 'no') {
         this.set('checked', false);
+      } else if (_status === 'maybe') {
+        this.set('checked', 'maybe');
       }
     }
   }
