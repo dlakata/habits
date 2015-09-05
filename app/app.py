@@ -3,6 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask_restful import Resource, Api, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -20,7 +21,7 @@ class Login(Resource):
         if not u:
             return {'error': 'User not found.'}
         if u.check_password(args['password']):
-            return {'token': jwt.encode({'some': 'payload'}, 'secret', algorithm='HS256')}
+            return {'token': jwt.encode({'email': args['email']}, 'dankmemes', algorithm='HS256')}
         else:
             return {'error': 'Incorrect password specified.'}
 
@@ -38,7 +39,39 @@ class Login(Resource):
             db.session.commit()
 
 
+class UserRoute(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email).first()
+        if not u:
+            return {'error': 'User not found.'}
+        else:
+            return {'email': u.email,
+                    'first_name': u.first_name,
+                    'last_name': u.last_name}
+
+
+class HabitRoute(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token', type=str)
+        args = parser.parse_args()
+        email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
+        u = User.query.filter_by(email=email).first()
+        if not u:
+            return {'error': 'User not found.'}
+        else:
+            return {'email': u.email,
+                    'first_name': u.first_name,
+                    'last_name': u.last_name}
+                    
+
 api.add_resource(Login, '/login')
+api.add_resource(UserRoute, '/user')
+api.add_resource(HabitRoute, '/habit')
 
 
 class User(db.Model):
@@ -47,12 +80,15 @@ class User(db.Model):
     last_name = db.Column(db.String(80))
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(120))
+    habits = db.relationship('Habit', backref='user',
+                                lazy='dynamic')
+    actions = db.relationship('Action', backref='user',
+                                lazy='dynamic')
 
     def __init__(self, first_name, last_name, email, password):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        print password, generate_password_hash(password)
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
@@ -62,6 +98,44 @@ class User(db.Model):
         return '<User {}>'.format(self.email)
 
 
+class Habit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    title = db.Column(db.String(140))
+    description = db.Column(db.Text)
+    # Number of minutes
+    frequency = db.Column(db.Integer)
+    actions = db.relationship('Action', backref='habit',
+                                lazy='dynamic')
+
+    def __init__(self, user_id, title, description, frequency):
+        self.user_id = user_id
+        self.title = title
+        self.description = description
+        self.frequency = frequency
+
+    def __repr__(self):
+        return '<Habit #{} for User {}>'.format(self.id, self.user_id)
+
+
+class Action(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sent = db.Column(db.DateTime)
+    received = db.Column(db.DateTime)
+    # 0 = Yes
+    # 1 = Maybe
+    # 2 = No
+    answer = db.Column(db.Integer)
+
+    def __init__(self, habit_id, user_id):
+        self.habit_id = habit_id
+        self.user_id = user_id
+        self.sent = datetime.now() 
+
+    def __repr__(self):
+        return '<Action #{} for Habit #{}>'.format(self.id, self.habit_id)
 
 
 @app.route("/")
