@@ -7,13 +7,13 @@ export default Ember.Component.extend({
   image: function() {
     var checked = this.get('checked');
     if (checked === false) {
-      return 'notok.png';
+      return '/assets/images/notok.png';
     } else if (checked === true) {
-      return 'ok.png';
+      return '/assets/images/ok.png';
     } else if (checked === 'maybe') {
-      return 'attention.png';
+      return '/assets/images/attention.png';
     } else {
-      return 'rating.png';
+      return '/assets/images/rating.png';
     }
   }.property('checked'),
 
