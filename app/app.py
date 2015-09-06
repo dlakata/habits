@@ -55,7 +55,7 @@ class UserAPI(Resource):
             return {'error': 'User not found.'}
         else:
             actions = []
-            for action in habit.actions:
+            for action in u.actions:
                 actions.append({'id': action.id,
                                 'sent': action.sent,
                                 'received': action.received,
