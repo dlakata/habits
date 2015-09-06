@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, current_app
+from flask import Flask, send_file
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_restful import Resource, Api, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -298,7 +298,7 @@ class Action(db.Model):
 
 @app.route("/")
 def main():
-    return send_from_directory(current_app.static_folder, "index.html")
+    return send_file("static/index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
