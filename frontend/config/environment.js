@@ -7,7 +7,8 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     'simple-auth': {
-      authorizer: 'simple-auth-authorizer:token'
+      authorizer: 'simple-auth-authorizer:token',
+      crossOriginWhitelist: ['http://localhost:5000']
     },
     'simple-auth-token': {
       serverTokenEndpoint: 'http://localhost:5000/token',
