@@ -9,14 +9,17 @@ export default Ember.Controller.extend({
         email: this.get('sEmail'),
         password: this.get('sPassword')
       }).then(function() {
-        document.location = "/dashboard";
+        document.location = '/dashboard';
       }, function() {
         this.set("loginFailed", true);
       }.bind(this));
     },
 
     authenticate: function() {
-      var credentials = this.getProperties('email', 'password');
+      var credentials = {
+        identification: this.get('email'),
+        password: this.get('password')
+      };
       var authenticator = 'simple-auth-authenticator:token';
 
       this.get('session').authenticate(authenticator, credentials);
