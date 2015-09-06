@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 api = Api(app)
 
 class LoginAPI(Resource):
-    def get(self):
+    def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str)
         parser.add_argument('password', type=str)
