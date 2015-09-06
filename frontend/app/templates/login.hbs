@@ -1,5 +1,8 @@
 <form class="col-md-4" {{action 'signUp' on='submit'}}>
   <h1>Sign up</h1>
+  {{#if signupFailed}}
+    <div class="alert alert-danger">Invalid submission, please try again.</div>
+  {{/if}}
   <div class="form-group">
     <label for="s_first_name">First name</label>
     {{input id="s_first_name" placeholder="First name" class="form-control" value=firstName}}
@@ -16,11 +19,14 @@
     <label for="s_password">Password</label>
     {{input id="s_password" type="password" placeholder="Password" class="form-control" value=sPassword}}
   </div>
-  <button type="submit" class="btn btn-success">Sign up</button>
+  <button type="submit" class="btn btn-success" disabled={{isProcessing}}>Sign up</button>
 </form>
 
 <form class="col-md-4 col-md-offset-2" {{action 'authenticate' on='submit'}}>
   <h1>Login</h1>
+  {{#if loginFailed}}
+    <div class="alert alert-danger">Login failed, please try again.</div>
+  {{/if}}
   <div class="form-group">
     <label for="email">Email</label>
     {{input id="email" placeholder="Email" class="form-control" value=email}}
