@@ -1,3 +1,4 @@
+$font-family-sans-serif: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @import "bootstrap_imports";
 
 body {
@@ -26,14 +27,28 @@ body {
   color: white;
 }
 
+.navbar-brand {
+  font-family: "Montserrat", "Lato", sans-serif;
+  font-size: 24px;
+
+  &:hover, &:focus {
+    color: white !important;
+  }
+}
+
 .nav a {
-  margin: 10px;
-  padding: 5px 10px !important;
+  margin: 6px 4px 4px;
+  padding: 8px 18px !important;
   font-weight: bold;
+  font-size: 16px;
 
   &:hover {
-    border-radius: 15px;
+    border-radius: 18px;
     background-color: #1976D2 !important;
+    color: white !important;
+  }
+
+  &:focus {
     color: white !important;
   }
 }
@@ -83,7 +98,10 @@ body {
 .habits-list {
   list-style: none;
   padding-left: 0;
-  font-size: 22px;
+}
+
+.habit-settings {
+  @extend .glyphicon, .glyphicon-cog, .pull-right;
 }
 
 .new-habit {

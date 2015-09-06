@@ -3,8 +3,12 @@
   <h1>Your habits</h1>
   <ul class="habits-list">
     {{#each model as |habit|}}
-      <li>{{habit.title}}
-        {{#link-to 'habit' habit}}<i class="glyphicon glyphicon-cog habit-settings" aria-hidden="true"></i>{{/link-to}}
+      <li>
+        <h3>{{habit.title}}</h3>
+        {{#link-to 'habit' habit}}
+          <i class="habit-settings" aria-hidden="true"></i>
+        {{/link-to}}
+        <p class="text-muted">{{habit.description}}</p>
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="{{habit.time}}"
                aria-valuemin="0" aria-valuemax="{{habit.goal}}" style="width: {{percentage habit}}%;">
