@@ -230,9 +230,9 @@ class ActionAPI(Resource):
 api.add_resource(LoginAPI, '/token')
 api.add_resource(CreateUserAPI, '/user')
 api.add_resource(UserAPI, '/user/<int:id>')
-api.add_resource(AllHabitsAPI, '/user/<int:user_id>/habit')
-api.add_resource(HabitAPI, '/user/<int:user_id>/habit/<int:habit_id>')
-api.add_resource(ActionAPI, '/user/<int:user_id>/habit/<int:habit_id>/action/<int:action_id>')
+api.add_resource(AllHabitsAPI, '/user/<int:user_id>/habits')
+api.add_resource(HabitAPI, '/user/<int:user_id>/habits/<int:habit_id>')
+api.add_resource(ActionAPI, '/user/<int:user_id>/habits/<int:habit_id>/action/<int:action_id>')
 
 
 class User(db.Model):
