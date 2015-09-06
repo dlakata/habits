@@ -261,17 +261,16 @@ class Habit(db.Model):
     user = db.relationship('User',
         backref=db.backref('habits', lazy='dynamic'))
     title = db.Column(db.String(140))
+    start_date = db.Column(db.String(140))
     description = db.Column(db.Text)
-    frequency = db.Column(db.Integer)
-    # 0 = minute, 1 = hour, 2 = day, 3 = week, 4 = month, 5 = year
-    frequency_type = db.Column(db.Integer)
+    frequency = db.Column(db.Integer)  # in units of days
 
-    def __init__(self, user, title, description, frequency, frequency_type):
+    def __init__(self, user, title, description, frequency, start_date):
         self.user = user
         self.title = title
         self.description = description
         self.frequency = frequency
-        self.frequency_type = frequency_type
+        self.start_date = start_date
 
     def __repr__(self):
         return '<Habit #{} for User {}>'.format(self.id, self.user_id)
