@@ -3,7 +3,7 @@ import Ember from 'ember';
 export default Ember.Controller.extend({
   actions: {
     signUp: function() {
-      $.post('/user', {
+      $.post('http://localhost:5000/user', {
         first_name: this.get('firstName'),
         last_name: this.get('lastName'),
         email: this.get('sEmail'),
