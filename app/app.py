@@ -113,8 +113,7 @@ class AllHabitsAPI(Resource):
                                'description': habit.description,
                                'frequency': habit.frequency,
                                'frequency_type': habit.frequency_type})
-            return {'habits': habits,
-                    'actions': actions}
+            return {'habits': habits}
 
 
     def post(self, user_id):
