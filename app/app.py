@@ -22,7 +22,7 @@ class LoginAPI(Resource):
         if not u:
             return {'error': 'User not found.'}
         if u.check_password(args['password']):
-            return {'token': jwt.encode({'email': args['email']}, 'dankmemes', algorithm='HS256')}
+            return {'token': jwt.encode({'email': args['email'], 'id': u.id}, 'dankmemes', algorithm='HS256')}
         else:
             return {'error': 'Incorrect password specified.'}
 
@@ -39,7 +39,7 @@ class CreateUserAPI(Resource):
         if u:
             db.session.add(u)
             db.session.commit()
-            return {'token': jwt.encode({'email': args['email']}, 'dankmemes', algorithm='HS256')}
+            return {'token': jwt.encode({'email': args['email'], 'id': u.id}, 'dankmemes', algorithm='HS256')}
         else:
             return {'error': 'User could not be created.'}
 
@@ -54,10 +54,17 @@ class UserAPI(Resource):
         if not u:
             return {'error': 'User not found.'}
         else:
+            actions = []
+            for action in habit.actions:
+                actions.append({'id': action.id,
+                                'sent': action.sent,
+                                'received': action.received,
+                                'answer': action.answer})
             return {'user_id': u.id,
                     'email': u.email,
                     'first_name': u.first_name,
                     'last_name': u.last_name,
+                    'actions': actions
                    }
 
     def put(self, id):
@@ -73,7 +80,7 @@ class UserAPI(Resource):
             return {'error': 'User not found.'}
         for k, v in args.items():
             if v is not None:
-                u[k] = v
+                setattr(u, k, v)
         db.session.commit()
 
     def delete(self, id):
@@ -122,10 +129,10 @@ class AllHabitsAPI(Resource):
         if not u:
             return {'error': 'User not found.'}
         else:
-            habit = Habit(user=u, 
-                          title=args['title'], 
-                          description=args.get('description'), 
-                          frequency=args['frequency'], 
+            habit = Habit(user=u,
+                          title=args['title'],
+                          description=args.get('description'),
+                          frequency=args['frequency'],
                           frequency_type=args['frequency_type'])
             if habit:
                 db.session.add(habit)
@@ -148,11 +155,18 @@ class HabitAPI(Resource):
             if not habit:
                 return {'error': 'Habit not found.'}
             else:
+                actions = []
+                for action in habit.actions:
+                    actions.append({'id': action.id,
+                                    'sent': action.sent,
+                                    'received': action.received,
+                                    'answer': action.answer})
                 return {'id': habit.id,
                         'title': habit.title,
                         'description': habit.description,
                         'frequency': habit.frequency,
-                        'frequency_type': habit.frequency_type}
+                        'frequency_type': habit.frequency_type,
+                        'actions': actions}
 
     def put(self, user_id, habit_id):
         parser = reqparse.RequestParser()
@@ -171,7 +185,7 @@ class HabitAPI(Resource):
             return {'error': 'Habit not found.'}
         for k, v in args.items():
             if v is not None:
-                habit[k] = v
+                setattr(habit, k, v)
         db.session.commit()
 
     def delete(self, user_id, habit_id):
@@ -181,30 +195,34 @@ class HabitAPI(Resource):
             return {'error': 'User not found.'}
         habit = Habit.query.filter_by(user_id=user_id, id=habit_id).first()
         if not habit:
-            return {'error': 'Habit not found.'}    
+            return {'error': 'Habit not found.'}
         db.session.delete(habit)
         db.session.commit()
 
 
 class ActionAPI(Resource):
-    def put(self, user_id, habit_id, action_id):
+    def get(self, user_id, habit_id, action_id):
         parser = reqparse.RequestParser()
         parser.add_argument('token', type=str)
         parser.add_argument('answer', type=str)
         args = parser.parse_args()
         email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
         u = User.query.filter_by(email=email, id=user_id).first()
-        action = Action.query.filter_by(id=action_id, 
-                                        user=u, 
-                                        habit_id=habit_id)
+        action = Action.query.filter_by(id=action_id,
+                                        user=u,
+                                        habit_id=habit_id).first()
+        print action, action.received
         if not action.received:
+            print datetime.now()
+            print args['answer']
             action.received = datetime.now()
             action.answer = args['answer']
+            action.save()
         db.session.commit()
         return send_from_directory(current_app.static_folder, "index.html")
 
 
-api.add_resource(LoginAPI, '/login')
+api.add_resource(LoginAPI, '/token')
 api.add_resource(CreateUserAPI, '/user')
 api.add_resource(UserAPI, '/user/<int:id>')
 api.add_resource(AllHabitsAPI, '/user/<int:user_id>/habit')
@@ -272,7 +290,7 @@ class Action(db.Model):
     def __init__(self, habit, user):
         self.habit = habit
         self.user = user
-        self.sent = datetime.now() 
+        self.sent = datetime.now()
 
     def __repr__(self):
         return '<Action #{} for Habit #{}>'.format(self.id, self.habit_id)
