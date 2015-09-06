@@ -9,6 +9,7 @@ Router.map(function() {
   this.route('login');
   this.route('dashboard');
   this.route('habit', { path: '/habit/:habit_id' });
+  this.route('new-habit');
   this.route('checkin');
 });
 

@@ -1,5 +1,5 @@
 {{#if model}}
-  <button class="new-habit" type="submit">New Habit</button>
+  {{#link-to 'new-habit'}}<button class="new-habit" type="submit">New Habit</button>{{/link-to}}
   <h1>Your habits</h1>
   <ul class="habits-list">
     {{#each model as |habit|}}
@@ -17,5 +17,5 @@
 {{else}}
 <h1 class="dashboard-good-title">You haven't entered any habits yet!</h1>
 <p class="dashboard-good-subtitle">Add a new habit now</p>
-<button class="dashboard-action-button" type="submit">New Habit</button>
+{{#link-to 'new-habit'}}<button class="dashboard-action-button" type="submit">New Habit</button>{{/link-to}}
 {{/if}}

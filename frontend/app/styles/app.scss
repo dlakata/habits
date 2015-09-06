@@ -130,3 +130,7 @@ footer {
   font-size: 12;
   color: #888;
 }
+
+.save-button {
+  @extend .btn, .btn-success;
+}
