@@ -263,13 +263,12 @@ class Habit(db.Model):
     frequency = db.Column(db.Integer)
     start = db.Column(db.DateTime)
 
-    def __init__(self, user, title, description, frequency, start, end):
+    def __init__(self, user, title, description, frequency, start):
         self.user = user
         self.title = title
         self.description = description
         self.frequency = frequency
         self.start = datetime.now()
-
 
     def __repr__(self):
         return '<Habit #{} for User {}>'.format(self.id, self.user_id)
