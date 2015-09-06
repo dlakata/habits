@@ -137,6 +137,11 @@ class AllHabitsAPI(Resource):
             if habit:
                 db.session.add(habit)
                 db.session.commit()
+                return {'id': habit.id,
+                        'title': habit.title,
+                        'description': habit.description,
+                        'frequency': habit.frequency,
+                        'frequency_type': habit.frequency_type}
             else:
                 return {'error': 'Habit could not be created.'}
 
