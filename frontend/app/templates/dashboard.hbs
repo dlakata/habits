@@ -1,5 +1,5 @@
-<button class="btn btn-default new-habit" type="submit">New Habit</button>
 {{#if model}}
+  <button class="new-habit" type="submit">New Habit</button>
   <h1>Your habits</h1>
   <ul class="habits-list">
     {{#each model as |habit|}}
@@ -15,5 +15,7 @@
     {{/each}}
   </ul>
 {{else}}
-  <h1>You haven't entered any habits yet!</h1>
+<h1 class="dashboard-good-title">You haven't entered any habits yet!</h1>
+<p class="dashboard-good-subtitle">Add a new habit now</p>
+<button class="dashboard-action-button" type="submit">New Habit</button>
 {{/if}}

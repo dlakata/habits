@@ -87,9 +87,25 @@ body {
 }
 
 .new-habit {
+  @extend .btn, .btn-primary;
   float: right;
   margin-top: 2em;
   margin-right: 2em;
+}
+
+.dashboard-good-title {
+  @extend .checkin-good-title;
+  padding-top: 1em;
+}
+
+.dashboard-good-subtitle {
+  @extend .checkin-good-subtitle;
+  padding-bottom: 0.5em;
+}
+
+.dashboard-action-button {
+  @extend .btn, .btn-primary, .btn-lg, .center-block;
+  margin-bottom: 1em;
 }
 
 .habit-form {
