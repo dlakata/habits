@@ -122,7 +122,6 @@ class AllHabitsAPI(Resource):
         parser.add_argument('title', type=str)
         parser.add_argument('description', type=str)
         parser.add_argument('frequency', type=int)
-        parser.add_argument('frequency_type', type=int)
         args = parser.parse_args()
         email = jwt.decode(args['token'], 'dankmemes', algorithms=['HS256'])['email']
         u = User.query.filter_by(email=email, id=user_id).first()
@@ -132,8 +131,7 @@ class AllHabitsAPI(Resource):
             habit = Habit(user=u,
                           title=args['title'],
                           description=args.get('description'),
-                          frequency=args['frequency'],
-                          frequency_type=args['frequency_type'])
+                          frequency=args['frequency'])
             if habit:
                 db.session.add(habit)
                 db.session.commit()
@@ -263,15 +261,15 @@ class Habit(db.Model):
     title = db.Column(db.String(140))
     description = db.Column(db.Text)
     frequency = db.Column(db.Integer)
-    # 0 = minute, 1 = hour, 2 = day, 3 = week, 4 = month, 5 = year
-    frequency_type = db.Column(db.Integer)
+    start = db.Column(db.DateTime)
 
-    def __init__(self, user, title, description, frequency, frequency_type):
+    def __init__(self, user, title, description, frequency, start, end):
         self.user = user
         self.title = title
         self.description = description
         self.frequency = frequency
-        self.frequency_type = frequency_type
+        self.start = datetime.now()
+
 
     def __repr__(self):
         return '<Habit #{} for User {}>'.format(self.id, self.user_id)
