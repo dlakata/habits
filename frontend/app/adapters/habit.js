@@ -2,6 +2,10 @@ import ApplicationAdapter from './application';
 
 export default ApplicationAdapter.extend({
   buildURL: function(type, id, record) {
-    return this.host + '/user/' + record.get('user.id') + '/habits/' + id;
+    var url = this.host + '/user/' + 1 + '/habits';
+    if (id !== null) {
+      url += '/' + id;
+    }
+    return url;
   }
 });
