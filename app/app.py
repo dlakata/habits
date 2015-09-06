@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 api = Api(app)
 
 class LoginAPI(Resource):
-    def get(self):
+    def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str)
         parser.add_argument('password', type=str)
@@ -55,7 +55,7 @@ class UserAPI(Resource):
             return {'error': 'User not found.'}
         else:
             actions = []
-            for action in habit.actions:
+            for action in u.actions:
                 actions.append({'id': action.id,
                                 'sent': action.sent,
                                 'received': action.received,
@@ -137,6 +137,11 @@ class AllHabitsAPI(Resource):
             if habit:
                 db.session.add(habit)
                 db.session.commit()
+                return {'id': habit.id,
+                        'title': habit.title,
+                        'description': habit.description,
+                        'frequency': habit.frequency,
+                        'frequency_type': habit.frequency_type}
             else:
                 return {'error': 'Habit could not be created.'}
 
@@ -225,9 +230,9 @@ class ActionAPI(Resource):
 api.add_resource(LoginAPI, '/token')
 api.add_resource(CreateUserAPI, '/user')
 api.add_resource(UserAPI, '/user/<int:id>')
-api.add_resource(AllHabitsAPI, '/user/<int:user_id>/habit')
-api.add_resource(HabitAPI, '/user/<int:user_id>/habit/<int:habit_id>')
-api.add_resource(ActionAPI, '/user/<int:user_id>/habit/<int:habit_id>/action/<int:action_id>')
+api.add_resource(AllHabitsAPI, '/user/<int:user_id>/habits')
+api.add_resource(HabitAPI, '/user/<int:user_id>/habits/<int:habit_id>')
+api.add_resource(ActionAPI, '/user/<int:user_id>/habits/<int:habit_id>/action/<int:action_id>')
 
 
 class User(db.Model):
