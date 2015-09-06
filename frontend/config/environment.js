@@ -7,9 +7,14 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     'simple-auth': {
-      serverTokenEndpoint: '/token',
-      identificationField: 'email',
       authorizer: 'simple-auth-authorizer:token'
+    },
+    'simple-auth-token': {
+      serverTokenEndpoint: 'http://localhost:5000/token',
+      identificationField: 'email'
+    },
+    contentSecurityPolicy: {
+      'connect-src': "'self' http://localhost:5000"
     },
     EmberENV: {
       FEATURES: {

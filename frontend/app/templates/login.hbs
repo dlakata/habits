@@ -2,19 +2,19 @@
   <h1>Sign up</h1>
   <div class="form-group">
     <label for="s_first_name">First name</label>
-    {{input id="s_first_name" placeholder="First name" class="form-control"}}
+    {{input id="s_first_name" placeholder="First name" class="form-control" value=firstName}}
   </div>
   <div class="form-group">
     <label for="s_last_name">Last name</label>
-    {{input id="s_last_name" placeholder="Last name" class="form-control"}}
+    {{input id="s_last_name" placeholder="Last name" class="form-control" value=lastName}}
   </div>
   <div class="form-group">
     <label for="s_email">Email</label>
-    {{input id="s_email" placeholder="Email" class="form-control"}}
+    {{input id="s_email" placeholder="Email" class="form-control" value=sEmail}}
   </div>
   <div class="form-group">
     <label for="s_password">Password</label>
-    {{input id="s_password" type="password" placeholder="Password" class="form-control"}}
+    {{input id="s_password" type="password" placeholder="Password" class="form-control" value=sPassword}}
   </div>
   <button type="submit" class="btn btn-success">Sign up</button>
 </form>
@@ -23,11 +23,11 @@
   <h1>Login</h1>
   <div class="form-group">
     <label for="email">Email</label>
-    {{input id="email" placeholder="Email" class="form-control"}}
+    {{input id="email" placeholder="Email" class="form-control" value=email}}
   </div>
   <div class="form-group">
     <label for="password">Password</label>
-    {{input id="password" type="password" placeholder="Password" class="form-control"}}
+    {{input id="password" type="password" placeholder="Password" class="form-control" value=password}}
   </div>
   <button type="submit" class="btn btn-primary">Login</button>
 </form>
