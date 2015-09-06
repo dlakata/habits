@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, current_app
+from flask import Flask, send_from_directory, current_app, abort
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_restful import Resource, Api, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,11 +20,13 @@ class LoginAPI(Resource):
         args = parser.parse_args()
         u = User.query.filter_by(email=args['email']).first()
         if not u:
-            return {'error': 'User not found.'}
+            return abort(401)
+            # return {'error': 'User not found.'}
         if u.check_password(args['password']):
             return {'token': jwt.encode({'email': args['email'], 'id': u.id}, 'dankmemes', algorithm='HS256')}
         else:
-            return {'error': 'Incorrect password specified.'}
+            return abort(401)
+            # return {'error': 'Incorrect password specified.'}
 
 
 class CreateUserAPI(Resource):
