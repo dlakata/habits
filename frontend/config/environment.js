@@ -15,7 +15,9 @@ module.exports = function(environment) {
       identificationField: 'email'
     },
     contentSecurityPolicy: {
-      'connect-src': "'self' http://localhost:5000"
+      'connect-src': "'self' http://localhost:5000",
+      'font-src': "'self' https://fonts.gstatic.com",
+      'style-src': "'self' https://fonts.googleapis.com"
     },
     EmberENV: {
       FEATURES: {
