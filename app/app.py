@@ -4,7 +4,6 @@ from flask_restful import Resource, Api, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime
-import requests
 
 
 app = Flask(__name__)
@@ -12,10 +11,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 api = Api(app)
 
+
 def get_user_token(args, id):
     token = args['Authorization'].split()[1]
     email = jwt.decode(token, 'dankmemes', algorithms=['HS256'])['email']
     return User.query.filter_by(email=email, id=id).first()
+
 
 class LoginAPI(Resource):
     def post(self):
@@ -28,7 +29,8 @@ class LoginAPI(Resource):
             return abort(401)
             # return {'error': 'User not found.'}
         if u.check_password(args['password']):
-            return {'token': jwt.encode({'email': args['email'], 'id': u.id}, 'dankmemes', algorithm='HS256')}
+            return {'token': jwt.encode({'email': args['email'], 'id': u.id},
+                    'dankmemes', algorithm='HS256')}
         else:
             return abort(401)
             # return {'error': 'Incorrect password specified.'}
@@ -46,7 +48,8 @@ class CreateUserAPI(Resource):
         if u:
             db.session.add(u)
             db.session.commit()
-            return {'token': jwt.encode({'email': args['email'], 'id': u.id}, 'dankmemes', algorithm='HS256')}
+            return {'token': jwt.encode({'email': args['email'], 'id': u.id},
+                    'dankmemes', algorithm='HS256')}
         else:
             return {'error': 'User could not be created.'}
 
@@ -257,8 +260,7 @@ class User(db.Model):
 class Habit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User',
-        backref=db.backref('habits', lazy='dynamic'))
+    user = db.relationship('User', backref=db.backref('habits', lazy='dynamic'))
     title = db.Column(db.String(140))
     description = db.Column(db.Text)
     frequency = db.Column(db.Integer)
@@ -278,11 +280,9 @@ class Habit(db.Model):
 class Action(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'))
-    habit = db.relationship('Habit',
-        backref=db.backref('actions', lazy='dynamic'))
+    habit = db.relationship('Habit', backref=db.backref('actions', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User',
-        backref=db.backref('actions', lazy='dynamic'))
+    user = db.relationship('User', backref=db.backref('actions', lazy='dynamic'))
     sent = db.Column(db.DateTime)
     received = db.Column(db.DateTime)
     # 0 = Yes
